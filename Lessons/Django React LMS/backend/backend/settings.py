@@ -42,14 +42,14 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     # Custom apps
-    'core',
-    'userauths',
-    'api',
+    "core",
+    "userauths",
+    "api",
 
     # Third Party Apps
-	'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
-    'corsheaders',
+	"rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
