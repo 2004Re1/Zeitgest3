@@ -41,7 +41,7 @@ class PasswordResetEmailVerifyAPIView(generics.RetrieveAPIView):
             user.refresh_token = refresh_token
             user.otp = generate_random_otp()            
             user.save()
-            link = f"http://localhost:5173/create-new-password/?otp={user.otp}&uuidb64={uuidb64}&=refresh_token{refresh_token}"
+            link = f"http://localhost:5173/create-new-password/?otp={user.otp}&uuidb64={uuidb64}&refresh_token={refresh_token}"
 
             context = {
                 "link": link,
@@ -79,7 +79,7 @@ class PasswordChangeAPIView(generics.CreateAPIView):
         user = User.objects.get(id=uuidb64, otp=otp)
         if user:
             user.set_password(password)
-            user.otp = ""
+            # user.otp = ""
             user.save()
 
             return Response({"message": "Password changed successfully."}, status=status.HTTP_200_CREATED)
