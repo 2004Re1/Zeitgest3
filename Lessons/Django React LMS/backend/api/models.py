@@ -165,4 +165,42 @@ class VariantItem(models.Model):
 
             duration_text = f"{minutes}m {seconds}s"
             self.content_duration = duration_text
-            super().save(update_fields=['content_duration'])    
+            super().save(update_fields=['content_duration']) 
+
+class Question_Answer(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    title = models.CharField(max_length=1000, null=True, blank=True)
+    qa_id = ShortUUIDField(unique=True, length=6, max_length=20, alphabet="1234567890")
+    date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.course.title}"
+    
+    class Meta:
+        ordering = ['-date']
+
+    def messages(self):
+        return Question_Answer_Message.objects.filter(question=self)
+    
+    def profile(self):
+        return Profile.objects.get(user=self.user)
+    
+class Question_Answer_Message(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question_Answer, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    message = models.TextField(null=True, blank=True)
+    qam_id = ShortUUIDField(unique=True, length=6, max_length=20, alphabet="1234567890")
+    qa_id = ShortUUIDField(unique=True, length=6, max_length=20, alphabet="1234567890")
+    date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.course.title}"
+    
+    class Meta:
+        ordering = ['date']
+
+    def profile(self):
+        return Profile.objects.get(user=self.user)
+       
