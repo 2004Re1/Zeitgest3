@@ -39,6 +39,23 @@ PLATFORM_STATUS = (
     ("Published", "Published"),
 )
 
+RATING = (
+    (1, "1 Star"),
+    (2, "2 Star"),
+    (3, "3 Star"),
+    (4, "4 Star"),
+    (5, "5 Star"),
+)
+
+NOTI_TYPE = (
+    ("New Order", "New Order"),
+    ("New Review", "New Review"),
+    ("New Course Question", "New Course Question"),
+    ("Draft", "Draft"),
+    ("Course Published", "Course Published"),
+    ("Course Enrollment Completed", "Course Enrollment Completed"),
+)
+
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.FileField(upload_to="course-file", blank=True, null=True, default="default.jpg")
