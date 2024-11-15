@@ -17,7 +17,7 @@ from decimal import Decimal
 import stripe
 import requests
 
-stripe.api_key settings.STRIPE_SECRET_KEY
+stripe.api_key = 'sk_test_51QKzt2Ck5d4qMYZgvljXYOHb9VdWluWT42YZn3N6xeyPfk54x82ihwexFQHa8Bu4hYjcNjeXQJ7bKo3gpayADxWp00THCEh03i'
 PAYPAL_CLIENT_ID = settings.PAYPAL_CLIENT_ID 
 PAYPAL_CLIENT_ID = settings.PAYPAL_SECRET_ID
 
@@ -407,18 +407,18 @@ class StripeCheckoutAPIView(generics.CreateAPIView):
         except stripe.error.StripeError as e:
             return Response({"message": f"Something went wrong when trying to make payment. Error: {str(e)}"})
 
-    
     def get_access_token(client_id, secret_key):
-    token_url = "https://api.sandbox.paypal.com/v1/oauth2/token"
-    data = {'grant_type': 'client_credentials'}
-    auth = (client_id, secret_key)
-    response = requests.post(token_url, data=data, auth=auth)
+        token_url = "https://api.sandbox.paypal.com/v1/oauth2/token"
+        data = {'grant_type': 'client_credentials'}
+        auth = (client_id, secret_key)
+        response = requests.post(token_url, data=data, auth=auth)
 
-    if response.status_code == 200:
-        print("Access TOken ====", response.json()['access_token'])
-        return response.json()['access_token']
-    else:
-        raise Exception(f"Failed to get access token from paypal {response.status_code}")
+        if response.status_code == 200:
+            print("Access Token ====", response.json()['access_token'])
+            return response.json()['access_token']
+        else:
+            raise Exception(f"Failed to get access token from paypal {response.status_code}") 
+
 
 class PaymentSuccessAPIView(generics.CreateAPIView):
     serializer_class = api_serializer.CartOrderSerializer
