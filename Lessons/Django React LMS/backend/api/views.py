@@ -500,3 +500,13 @@ class PaymentSuccessAPIView(generics.CreateAPIView):
                     return Response({"message": "Already Paid"})
             else:
                     return Response({"message": "Payment Failed"})
+
+class SearchCourseAPIView(generics.ListAPIView):
+    serializer_class = api_serializer.CourseSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        query = self.request.GET.get('query')
+        # learn lms
+        return api_models.Course.objects.filter(title__icontains=query, platform_status="Published", teacher_course_status="Published")
+    
