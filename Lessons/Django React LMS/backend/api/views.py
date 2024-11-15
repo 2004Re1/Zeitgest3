@@ -86,3 +86,53 @@ class PasswordChangeAPIView(generics.CreateAPIView):
         else:
             return Response({"message": "User Does Not Exists"}, status=status.HTTP_404_NOT_FOUND)
            
+class ChangePasswordAPIView(generics.CreateAPIView):
+    serializer_class = api_serializer.UserSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        user_id = request.data['user_id']
+        old_password = request.data['old_password']
+        new_password = request.data['new_password']
+
+        user = User.objects.get(id=user_id)
+        if user is not None:
+            if check_password(old_password, user.password):
+                user.set_password(new_password)
+                user.save()
+                return Response({"message": "Password changed successfully", "icon": "success"})
+            else:
+                return Response({"message": "Old password is incorrect", "icon": "warning"})
+        else:
+            return Response({"message": "User does not exists", "icon": "error"})
+
+                
+
+class ProfileAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = api_serializer.ProfileSerializer
+    permission_classes = [AllowAny]
+
+    def get_object(self):
+        user_id = self.kwargs['user_id']
+        user = User.objects.get(id=user_id)
+        return Profile.objects.get(user=user)
+
+class CategoryListAPIView(generics.ListAPIView):
+    queryset = api_models.Category.objects.filter(active=True)  
+    serializer_class = api_serializer.CategorySerializer
+    permission_classes = [AllowAny]
+
+class CourseListAPIView(generics.ListAPIView):
+    queryset = api_models.Course.objects.filter(platform_status="Published", teacher_course_status="Published")
+    serializer_class = api_serializer.CourseSerializer
+    permission_classes = [AllowAny]
+
+class CourseDetailAPIView(generics.RetrieveAPIView):
+    serializer_class = api_serializer.CourseSerializer
+    permission_classes = [AllowAny]
+    queryset = api_models.Course.objects.filter(platform_status="Published", teacher_course_status="Published")
+
+    def get_object(self):
+        slug = self.kwargs['slug']
+        course = api_models.Course.objects.get(slug=slug, platform_status="Published", teacher_course_status="Published")
+        return course
