@@ -6,11 +6,14 @@ import BaseHeader from '../partials/BaseHeader'
 import BaseFooter from '../partials/BaseFooter'
 import { useParams } from 'react-router-dom'
 import useAxios from '../../utils/UseAxios'
+import CartId from '../plugin/CartId'
 
 function CourseDetail() {
     const [course, setCourse] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [addToCartBtn, setAddToCartBtn] = useState("Add To Cart");
     const param = useParams();
+    console.log(CartId());
     console.log(param.slug);
     const fetchCourse = () => {
         useAxios()
@@ -24,6 +27,30 @@ function CourseDetail() {
     useEffect(() => {
         fetchCourse();
     }, []);
+
+    const addToCart = async (courseId, userId, price, country, cartId) => {
+        setAddToCartBtn("Adding To Card ")
+        const formdata = new FormData();
+    
+        formdata.append("course_id", courseId);
+        formdata.append("user_id", userId);
+        formdata.append("price", price);
+        formdata.append("country_name", country);
+        formdata.append("cart_id", cartId);
+    
+        try {
+            await useAxios()
+              .post(`course/cart/`, formdata)
+              .then((res) => {
+                console.log(res.data);
+                setAddToCartBtn("Added To Cart");
+              });
+        } catch (error) {
+            console.log(error);
+            setAddToCartBtn("Add To Cart");
+            }
+        };
+    
 
     return (
         <>
@@ -939,9 +966,63 @@ function CourseDetail() {
                                                 </div>
                                                 {/* Buttons */}
                                                 <div className="mt-3 d-sm-flex justify-content-sm-between ">
-                                                    <Link to="/cart/" className="btn btn-primary mb-0 w-100 me-2">
-                                                        <i className='fas fa-shopping-cart'></i> Add To Cart
-                                                    </Link>
+                                                <div className="mt-3 d-sm-flex justify-content-sm-between ">
+                                                    {addToCartBtn === "Add To Cart" && (
+                                                        <button
+                                                        type="button"
+                                                        className="btn btn-primary mb-0 w-100 me-2"
+                                                        onClick={() =>
+                                                            addToCart(
+                                                            course.id,
+                                                            1,
+                                                            course.price,
+                                                            "Nigeria",
+                                                            CartId()
+                                                            )
+                                                        }
+                                                        >
+                                                        <i className="fas fa-shopping-cart"></i> Add
+                                                        To Cart
+                                                        </button>
+                                                    )}
+
+                                                    {addToCartBtn === "Added To Cart" && (
+                                                        <button
+                                                        type="button"
+                                                        className="btn btn-primary mb-0 w-100 me-2"
+                                                        onClick={() =>
+                                                            addToCart(
+                                                            course.id,
+                                                            1,
+                                                            course.price,
+                                                            "Nigeria",
+                                                            "8325347"
+                                                            )
+                                                        }
+                                                        >
+                                                        <i className="fas fa-check-circle"></i> Added
+                                                        To Cart
+                                                        </button>
+                                                    )}
+
+                                                    {addToCartBtn === "Adding To Cart" && (
+                                                        <button
+                                                        type="button"
+                                                        className="btn btn-primary mb-0 w-100 me-2"
+                                                        onClick={() =>
+                                                            addToCart(
+                                                            course.id,
+                                                            1,
+                                                            course.price,
+                                                            "Nigeria",
+                                                            "8325347"
+                                                            )
+                                                        }
+                                                        >
+                                                        <i className="fas fa-spinner fa-spin"></i>{" "}
+                                                        Adding To Cart
+                                                        </button>
+                                                    )}
                                                     <Link to="/cart/" className="btn btn-success mb-0 w-100">
                                                         Enroll Now <i className='fas fa-arrow-right'></i>
                                                     </Link>
@@ -1008,6 +1089,7 @@ function CourseDetail() {
                         </div>
                         {/* Row END */}
                     </div>
+                </div>
                 </section>
                 <section className='mb-5'>
                     <div className="container mb-lg-8 ">
