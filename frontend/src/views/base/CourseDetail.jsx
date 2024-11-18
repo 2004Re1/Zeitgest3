@@ -7,14 +7,15 @@ import BaseFooter from '../partials/BaseFooter'
 import { useParams } from 'react-router-dom'
 import useAxios from '../../utils/UseAxios'
 import CartId from '../plugin/CartId'
+import GetCurrentAddress from '../plugin/UserCountry'
 
 function CourseDetail() {
     const [course, setCourse] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [addToCartBtn, setAddToCartBtn] = useState("Add To Cart");
     const param = useParams();
-    console.log(CartId());
-    console.log(param.slug);
+
+    const country = GetCurrentAddress().country;
     const fetchCourse = () => {
         useAxios()
         .get(`course/course-detail/${param.slug}/`)
@@ -976,7 +977,7 @@ function CourseDetail() {
                                                             course.id,
                                                             1,
                                                             course.price,
-                                                            "Nigeria",
+                                                            country,
                                                             CartId()
                                                             )
                                                         }

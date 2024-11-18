@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+// Get the current address of the user
 function GetCurrentAddress() {
   const [add, setAdd] = useState("");
 
