@@ -11,6 +11,7 @@ import ForgotPassword from "./views/auth/ForgotPassword";
 import CreateNewPassword from "./views/auth/CreateNewPassword";
 
 import Index from './views/base/Index';
+import CourseDetail from "./views/base/CourseDetail";
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
 
           {/* Base Routes*/}
           <Route path="/" element={<Index />} />
+          <Route path="/course-detail/:slug/" element={<CourseDetail />} />
         </Routes>
       </MainWrapper>
     </BrowserRouter>
