@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom'
 import useAxios from '../../utils/UseAxios'
 import CartId from '../plugin/CartId'
 import GetCurrentAddress from '../plugin/UserCountry'
+import UserData from '../plugin/UserData'
 
 function CourseDetail() {
     const [course, setCourse] = useState([]);
@@ -16,6 +17,7 @@ function CourseDetail() {
     const param = useParams();
 
     const country = GetCurrentAddress().country;
+    const userId = UserData().user_id;
     const fetchCourse = () => {
         useAxios()
         .get(`course/course-detail/${param.slug}/`)
@@ -975,7 +977,7 @@ function CourseDetail() {
                                                         onClick={() =>
                                                             addToCart(
                                                             course.id,
-                                                            1,
+                                                            userId,
                                                             course.price,
                                                             country,
                                                             CartId()
