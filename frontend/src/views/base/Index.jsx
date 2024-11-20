@@ -1,15 +1,27 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import BaseHeader from '../partials/BaseHeader'
 import BaseFooter from '../partials/BaseFooter'
 import { Link } from 'react-router-dom'
 import Rater from 'react-rater'
 import "react-rater/lib/react-rater.css"
 import useAxios from '../../utils/UseAxios'
+import Toast from '../plugin/Toast'
+import apiInstance from '../../utils/axios'
+import CartId from '../plugin/CartId'
+import GetCurrentAddress from '../plugin/UserCountry'
+import UserData from '../plugin/UserData'
+
+import { CartContext } from '../plugin/Context'
 
 function Index() {
-    const [courses, setCourses] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [courses, setCourses] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [cartCount, setCartCount] = useContext(CartContext);
+
+    const country = GetCurrentAddress().country;
+    const userId = UserData()?.user_id;
+    const cartId = CartId();
 
     const fetchCourse = async () => {
         try {
@@ -27,6 +39,35 @@ function Index() {
     useEffect(() => {
         fetchCourse();
     }, [])
+
+    const addToCart = async (courseId, userId, price, country, cartId) => {
+        const formdata = new FormData();
+    
+        formdata.append("course_id", courseId);
+        formdata.append("user_id", userId);
+        formdata.append("price", price);
+        formdata.append("country_name", country);
+        formdata.append("cart_id", cartId);
+    
+        try {
+            await useAxios()
+              .post(`course/cart/`, formdata)
+              .then((res) => {
+                console.log(res.data);
+                Toast().fire({
+                  icon: "success",
+                  title: "Added To Cart",
+                  text: "Course has been added to cart"
+                });
+
+                apiInstance.get(`course/cart-list/${CartId()}/`).then((res) => {
+                    setCartCount(res.data?.length);
+                });
+              });
+        } catch (error) {
+            console.log(error);
+            }
+        };
 
     return (
         <>
@@ -210,7 +251,11 @@ function Index() {
                                                     <h5 className="mb-0">${c.price}</h5>
                                                 </div>
                                                 <div className="col-auto">
-                                                    <button type='button' className="text-inherit text-decoration-none btn btn-primary me-2">
+                                                    <button 
+                                                        type='button'
+                                                        onClick={() => addToCart(c.id, userId, c.price, country, cartId)}
+                                                        className="text-inherit text-decoration-none btn btn-primary me-2"
+                                                    >
                                                         <i className="fas fa-shopping-cart text-primary text-white" />
                                                     </button>
                                                     <Link to={""} className="text-inherit text-decoration-none btn btn-primary">
