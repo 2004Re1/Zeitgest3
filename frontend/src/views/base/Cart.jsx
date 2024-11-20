@@ -12,6 +12,11 @@ function Cart() {
     const [cart, setCart] = useState([]);
     const [cartStats, setCartStats] = useState([]);
     const [cartCount, setCartCount] = useContext(CartContext);
+    const [bioData, setBioData] = useState({
+        full_name: "",
+        email: "",
+        country: "",
+      });
 
     const fetchCartItem = async () => {
         try {
@@ -49,6 +54,15 @@ function Cart() {
             });
           });
       };
+
+      const handleBioDataChange = (event) => {
+        setBioData({
+          ...bioData,
+          [event.target.name]: event.target.value,
+        });
+      };
+
+      console.log(bioData);
 
     return (
         <>
@@ -159,6 +173,9 @@ function Cart() {
                                                 className="form-control"
                                                 id="yourName"
                                                 placeholder="Name"
+                                                name="full_name"
+                                                value={bioData.full_name}
+                                                onChange={handleBioDataChange}
                                             />
                                         </div>
                                         {/* Email */}
@@ -171,6 +188,9 @@ function Cart() {
                                                 className="form-control"
                                                 id="emailInput"
                                                 placeholder="Email"
+                                                name="email"
+                                                value={bioData.email}
+                                                onChange={handleBioDataChange}
                                             />
                                         </div>
                                         
@@ -184,6 +204,9 @@ function Cart() {
                                                 className="form-control"
                                                 id="mobileNumber"
                                                 placeholder="Country"
+                                                name="country"
+                                                value={bioData.country}
+                                                onChange={handleBioDataChange}
                                             />
                                         </div>
 
