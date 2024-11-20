@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext} from "react";
 import { Link } from "react-router-dom";
+import { CartContext } from "../plugin/Context";
 
 function BaseHeader() {
+
+    const [cartCount, setCartCount] = useContext(CartContext);
     return (
         <div>
             <nav className="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
@@ -165,7 +168,7 @@ function BaseHeader() {
                             Register <i className="fas fa-user-plus"> </i>
                         </Link>
                         <Link className="btn btn-success ms-2" to="/cart/">
-                            Cart (3) <i className="fas fa-shopping-cart"> </i>
+                            Card ({cartCount}) <i className="fas fa-shopping-cart"> </i>
                         </Link>
                     </div>
                 </div>

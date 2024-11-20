@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext} from 'react'
 import { Link } from 'react-router-dom'
 
 import BaseHeader from '../partials/BaseHeader'
 import BaseFooter from '../partials/BaseFooter'
 import CartId from "../plugin/CartId";
 import apiInstance from "../../utils/axios";
+import { CartContext } from '../plugin/Context';
+import Toast from '../plugin/Toast';
 
 function Cart() {
     const [cart, setCart] = useState([]);
     const [cartStats, setCartStats] = useState([]);
+    const [cartCount, setCartCount] = useContext(CartContext);
 
     const fetchCartItem = async () => {
         try {
@@ -38,7 +41,7 @@ function Cart() {
             fetchCartItem();
             Toast().fire({
               icon: "success",
-              title: "Card item deleted",
+              title: "Cart item deleted",
             });
             // Set cart count after adding to cart
             apiInstance.get(`course/cart-list/${CartId()}/`).then((res) => {

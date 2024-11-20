@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import moment from "moment"
 import Swal from 'sweetalert2'
@@ -11,11 +11,14 @@ import CartId from '../plugin/CartId'
 import GetCurrentAddress from '../plugin/UserCountry'
 import Toast from '../plugin/Toast'
 import UserData from '../plugin/UserData'
+import { CartContext } from '../plugin/Context'
+import apiInstance from '../../utils/axios'
 
 function CourseDetail() {
     const [course, setCourse] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [addToCartBtn, setAddToCartBtn] = useState("Add To Cart");
+    const [cartCount, setCartCount] = useContext(CartContext);
     const param = useParams();
 
     const country = GetCurrentAddress().country;
@@ -53,6 +56,10 @@ function CourseDetail() {
                   icon: "success",
                   title: "Added To Cart",
                   text: "Course has been added to cart"
+                });
+
+                apiInstance.get(`course/cart-list/${CartId()}/`).then((res) => {
+                    setCartCount(res.data?.length);
                 });
               });
         } catch (error) {
