@@ -30,6 +30,23 @@ function Cart() {
         fetchCartItem();
       }, []);
 
+      const cartItemDelete = async (itemId) => {
+        await apiInstance
+          .delete(`course/cart-item-delete/${CartId()}/${itemId}/`)
+          .then((res) => {
+            console.log(res.data);
+            fetchCartItem();
+            Toast().fire({
+              icon: "success",
+              title: "Card item deleted",
+            });
+            // Set cart count after adding to cart
+            apiInstance.get(`course/cart-list/${CartId()}/`).then((res) => {
+              setCartCount(res.data?.length);
+            });
+          });
+      };
+
     return (
         <>
             <BaseHeader />
@@ -116,7 +133,7 @@ function Cart() {
                                                 ))}
 
                                                 {cart?.length < 1 && (
-                                                <p className="mt-1 p-1">No Item In Cart</p>
+                                                <p className="mt-1 p-1">No item in card</p>
                                                 )}
                                             </tbody>
                                         </table>
