@@ -3,6 +3,7 @@ import BaseHeader from "../partials/BaseHeader";
 import BaseFooter from "../partials/BaseFooter";
 import { Link } from "react-router-dom";
 import apiInstance from "../../utils/axios";
+import Toast from "../plugin/Toast";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +15,10 @@ function ForgotPassword() {
       await apiInstance.get(`user/password-reset/${email}/`).then((res) => {
         console.log(res.data);
         setIsLoading(false);
-        alert("Password Reset Email Sent");
+        Toast().fire({
+          icon: "info",
+          title: "Password reset link has been sent to your email",
+        });
       });
     } catch (error) {
       console.log("error: ", error);

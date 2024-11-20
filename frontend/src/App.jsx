@@ -12,6 +12,7 @@ import CreateNewPassword from "./views/auth/CreateNewPassword";
 
 import Index from './views/base/Index';
 import CourseDetail from "./views/base/CourseDetail";
+import Cart from "./views/base/Cart";
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
           {/* Base Routes*/}
           <Route path="/" element={<Index />} />
           <Route path="/course-detail/:slug/" element={<CourseDetail />} />
+          <Route path="/cart/" element={<Cart />} />
         </Routes>
       </MainWrapper>
     </BrowserRouter>

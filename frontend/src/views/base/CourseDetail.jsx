@@ -2,12 +2,14 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import moment from "moment"
+import Swal from 'sweetalert2'
 import BaseHeader from '../partials/BaseHeader'
 import BaseFooter from '../partials/BaseFooter'
 import { useParams } from 'react-router-dom'
 import useAxios from '../../utils/UseAxios'
 import CartId from '../plugin/CartId'
 import GetCurrentAddress from '../plugin/UserCountry'
+import Toast from '../plugin/Toast'
 import UserData from '../plugin/UserData'
 
 function CourseDetail() {
@@ -47,6 +49,11 @@ function CourseDetail() {
               .then((res) => {
                 console.log(res.data);
                 setAddToCartBtn("Added To Cart");
+                Toast().fire({
+                  icon: "success",
+                  title: "Added To Cart",
+                  text: "Course has been added to cart"
+                });
               });
         } catch (error) {
             console.log(error);
