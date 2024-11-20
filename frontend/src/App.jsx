@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import MainWrapper from "./layouts/MainWrapper";
 import PrivateRoute from "./layouts/PrivateRoute";
 
+import { CartContext } from "./views/plugin/Context";
+import apiInstance from "./utils/axios";
+import CartId from "./views/plugin/CartId";
+
 import Register from "../src/views/auth/Register";
 import Login from "../src/views/auth/Login";
 import Logout from "../src/views/auth/Logout";
@@ -13,9 +17,7 @@ import CreateNewPassword from "./views/auth/CreateNewPassword";
 import Index from './views/base/Index';
 import CourseDetail from "./views/base/CourseDetail";
 import Cart from "./views/base/Cart";
-import { CartContext } from "./views/plugin/Context";
-import apiInstance from "./utils/axios";
-import CartId from "./views/plugin/CartId";
+import Checkout from "./views/base/Checkout";
 
 function App() {
 
@@ -43,6 +45,7 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/course-detail/:slug/" element={<CourseDetail />} />
             <Route path="/cart/" element={<Cart />} />
+            <Route path="/checkout/:order_oid/" element={<Checkout />} />
           </Routes>
         </MainWrapper>
       </BrowserRouter>

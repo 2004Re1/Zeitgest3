@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext} from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import BaseHeader from '../partials/BaseHeader'
 import BaseFooter from '../partials/BaseFooter'
 import CartId from "../plugin/CartId";
+import { userId } from '../../utils/constants';
 import apiInstance from "../../utils/axios";
 import { CartContext } from '../plugin/Context';
 import Toast from '../plugin/Toast';
@@ -36,33 +37,54 @@ function Cart() {
 
     useEffect(() => {
         fetchCartItem();
-      }, []);
+    }, []);
+    
+    const navigate = useNavigate();
 
-      const cartItemDelete = async (itemId) => {
-        await apiInstance
-          .delete(`course/cart-item-delete/${CartId()}/${itemId}/`)
-          .then((res) => {
-            console.log(res.data);
-            fetchCartItem();
-            Toast().fire({
-              icon: "success",
-              title: "Cart item deleted",
-            });
-            // Set cart count after adding to cart
-            apiInstance.get(`course/cart-list/${CartId()}/`).then((res) => {
-              setCartCount(res.data?.length);
-            });
-          });
-      };
-
-      const handleBioDataChange = (event) => {
-        setBioData({
-          ...bioData,
-          [event.target.name]: event.target.value,
+    const cartItemDelete = async (itemId) => {
+    await apiInstance
+        .delete(`course/cart-item-delete/${CartId()}/${itemId}/`)
+        .then((res) => {
+        console.log(res.data);
+        fetchCartItem();
+        Toast().fire({
+            icon: "success",
+            title: "Cart item deleted",
         });
-      };
+        // Set cart count after adding to cart
+        apiInstance.get(`course/cart-list/${CartId()}/`).then((res) => {
+            setCartCount(res.data?.length);
+        });
+        });
+    };
 
-      console.log(bioData);
+    const handleBioDataChange = (event) => {
+    setBioData({
+        ...bioData,
+        [event.target.name]: event.target.value,
+    });
+    };
+
+    const createOrder = async (e) => {
+    e.preventDefault()
+    const formdata = new FormData()
+    formdata.append("full_name", bioData.full_name);
+    formdata.append("email", bioData.email);
+    formdata.append("country", bioData.country);
+    formdata.append("cart_id", CartId());
+    formdata.append("user_id", userId);
+
+    try {
+        await apiInstance.post(`order/create-order/`, formdata).then((res) => {
+        console.log(res.data);
+        navigate(`/checkout/${res.data.order_oid}/`);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    };
+
+    console.log(bioData);
 
     return (
         <>
@@ -98,7 +120,7 @@ function Cart() {
 
             <section className="pt-5">
                 <div className="container">
-                    <form  >
+                    <form onSubmit={createOrder}>
                         <div className="row g-4 g-sm-5">
                             {/* Main content START */}
                             <div className="col-lg-8 mb-4 mb-sm-0">
@@ -235,9 +257,9 @@ function Cart() {
                                         </li>
                                     </ul>
                                     <div className="d-grid">
-                                        <Link to={`/checkout/`} className="btn btn-lg btn-success">
+                                        <button type="submit" className="btn btn-lg btn-success">
                                             Proceed to Checkout
-                                        </Link>
+                                        </button>
                                     </div>
                                     <p className="small mb-0 mt-2 text-center">
                                         By proceeding to checkout, you agree to these{" "}<a href="#"> <strong>Terms of Service</strong></a>
