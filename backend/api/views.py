@@ -7,6 +7,7 @@ from api import serializer as api_serializer
 from api import models as api_models
 from userauths.models import User, Profile
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.hashers import check_password
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -576,3 +577,43 @@ class StudentCourseCompletedCreateAPIView(generics.CreateAPIView):
         else:
             api_models.CompletedLesson.objects.create(user=user, course=course, variant_item=variant_item)
             return Response({"message": "Course marked as completed"})
+
+class StudentNoteCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = api_serializer.NoteSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        enrollment_id = self.kwargs['enrollment_id']
+
+        user = User.objects.get(id=user_id)
+        enrolled = api_models.EnrolledCourse.objects.get(enrollment_id=enrollment_id)
+        
+        return api_models.Note.objects.filter(user=user, course=enrolled.course)
+
+    def create(self, request, *args, **kwargs):
+        user_id = request.data['user_id']
+        enrollment_id = request.data['enrollment_id']
+        title = request.data['title']
+        note = request.data['note']
+
+        user = User.objects.get(id=user_id)
+        enrolled = api_models.EnrolledCourse.objects.get(enrollment_id=enrollment_id)
+        
+        api_models.Note.objects.create(user=user, course=enrolled.course, note=note, title=title)
+
+        return Response({"message": "Note created successfullly"}, status=status.HTTP_201_CREATED)
+
+class StudentNoteDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = api_serializer.NoteSerializer
+    permission_classes = [AllowAny]
+
+    def get_object(self):
+        user_id = self.kwargs['user_id']
+        enrollment_id = self.kwargs['enrollment_id']
+        note_id = self.kwargs['note_id']
+
+        user = User.objects.get(id=user_id)
+        enrolled = api_models.EnrolledCourse.objects.get(enrollment_id=enrollment_id)
+        note = api_models.Note.objects.get(user=user, course=enrolled.course, id=note_id)
+        return note
