@@ -11,7 +11,7 @@ function Header() {
                                 <img src="https://geeksui.codescandy.com/geeks/assets/images/avatar/avatar-4.jpg" className="avatar-xl rounded-circle border border-4 border-white" alt="avatar" style={{ width: "70px", height: "70px", borderRadius: "50%", objectFit: "cover" }} />
                             </div>
                             <div className="lh-1">
-                                <h2 className="mb-0"> Destiny Franks</h2>
+                                <h2 className="mb-0">Zeitgeist</h2>
                                 <p className="mb-0 d-block">@desphixs</p>
                             </div>
                         </div>

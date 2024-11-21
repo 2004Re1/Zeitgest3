@@ -19,7 +19,7 @@ function BaseHeader() {
             <nav className="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
                 <div className="container">
                     <Link className="navbar-brand" to="/">
-                        Desphixs
+                        Zeitgeist
                     </Link>
                     <button
                         className="navbar-toggler"

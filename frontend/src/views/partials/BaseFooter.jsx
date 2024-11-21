@@ -8,10 +8,10 @@ function BaseFooter() {
           <div className="col-lg-4 col-md-6 col-12 text-white">
             {/* about company */}
             <div className="mb-4">
-              <h1>Desphixs</h1>
+              <h1>Zeitgeist</h1>
               <div className="mt-4">
                 <p>
-                  Desphixs is feature-rich components and beautifully Bootstrap UIKit
+                  Zeitgeist is feature-rich components and beautifully Bootstrap UIKit
                   for developers, built with bootstrap responsive framework.
                 </p>
                 {/* social media */}
@@ -164,7 +164,7 @@ function BaseFooter() {
               <div className="me-4">
                 <span>
                   ©<span id="copyright5"></span>
-                  Desphixs
+                  Zeitgeist
                 </span>
               </div>
               <div>
