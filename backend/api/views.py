@@ -710,3 +710,26 @@ class QuestionAnswerListCreateAPIView(generics.ListCreateAPIView):
         )
         
         return Response({"message": "Group conversation Started"}, status=status.HTTP_201_CREATED)
+
+class QuestionAnswerMessageSendAPIView(generics.CreateAPIView):
+    serializer_class = api_serializer.Question_Answer_MessageSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        course_id = request.data['course_id']
+        qa_id = request.data['qa_id']
+        user_id = request.data['user_id']
+        message = request.data['message']
+
+        user = User.objects.get(id=user_id)
+        course = api_models.Course.objects.get(id=course_id)
+        question = api_models.Question_Answer.objects.get(qa_id=qa_id)
+        api_models.Question_Answer_Message.objects.create(
+            course=course,
+            user=user,
+            message=message,
+            question=question
+        )
+
+        question_serializer = api_serializer.Question_AnswerSerializer(question)
+        return Response({"messgae": "Message Sent", "question": question_serializer.data})
