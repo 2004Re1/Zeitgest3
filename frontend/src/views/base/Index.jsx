@@ -225,7 +225,7 @@ function Index() {
                                                 </a>
                                             </div>
                                             <h4 className="mb-2 text-truncate-line-2 ">
-                                                <Link to={c.slug} className="text-inherit text-decoration-none text-dark fs-5">
+                                                <Link to={`/course-detail/${c.slug}/`} className="text-inherit text-decoration-none text-dark fs-5">
                                                     {c.title}
                                                 </Link>
                                             </h4>

@@ -18,6 +18,7 @@ import Index from './views/base/Index';
 import CourseDetail from "./views/base/CourseDetail";
 import Cart from "./views/base/Cart";
 import Checkout from "./views/base/Checkout";
+import Success from "./views/base/Success";
 
 function App() {
 
@@ -46,6 +47,7 @@ function App() {
             <Route path="/course-detail/:slug/" element={<CourseDetail />} />
             <Route path="/cart/" element={<Cart />} />
             <Route path="/checkout/:order_oid/" element={<Checkout />} />
+            <Route path="/payment-success/:order_oid/" element={<Success />} />
           </Routes>
         </MainWrapper>
       </BrowserRouter>
