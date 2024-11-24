@@ -12,7 +12,7 @@ function Header() {
                             </div>
                             <div className="lh-1">
                                 <h2 className="mb-0">Zeitgeist</h2>
-                                <p className="mb-0 d-block">@desphixs</p>
+                                <p className="mb-0 d-block">@zeitgeist</p>
                             </div>
                         </div>
                         <div>

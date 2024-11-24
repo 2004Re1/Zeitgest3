@@ -21,6 +21,8 @@ import Checkout from "./views/base/Checkout";
 import Success from "./views/base/Success";
 import Search from "./views/base/Search";
 
+import StudentDashboard from "./views/student/Dashboard";
+
 function App() {
 
   const [cartCount, setCartCount] = useState(0);
@@ -50,6 +52,9 @@ function App() {
             <Route path="/checkout/:order_oid/" element={<Checkout />} />
             <Route path="/payment-success/:order_oid/" element={<Success />} />
             <Route path="/search/" element={<Search />} />
+
+            {/* Student Routes */}
+            <Route path="/student/dashboard/" element={<StudentDashboard />}/>
           </Routes>
         </MainWrapper>
       </BrowserRouter>

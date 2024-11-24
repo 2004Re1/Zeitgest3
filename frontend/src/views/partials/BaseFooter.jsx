@@ -132,7 +132,7 @@ function BaseFooter() {
               <p>123 Main Street, U.S.A</p>
               <p className="mb-1">
                 Email:
-                <a href="#" className='text-white'> support@desphixs.com</a>
+                <a href="#" className='text-white'> zeitgeist@gmail.com</a>
               </p>
               <p>
                 Phone:
