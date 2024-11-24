@@ -22,6 +22,7 @@ import Success from "./views/base/Success";
 import Search from "./views/base/Search";
 
 import StudentDashboard from "./views/student/Dashboard";
+import StudentCourses from "./views/student/Courses";
 
 function App() {
 
@@ -55,6 +56,7 @@ function App() {
 
             {/* Student Routes */}
             <Route path="/student/dashboard/" element={<StudentDashboard />}/>
+            <Route path="/student/courses/" element={<StudentCourses />} />
           </Routes>
         </MainWrapper>
       </BrowserRouter>
