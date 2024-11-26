@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-3urd4-0i^wzige()vvz0u#d-ztgtimg64!!s6itno)$@25-)w)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://127.0.0.1:5173', '*']
 
 
 # Application definition
@@ -69,6 +69,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "backend.urls"
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',  # In case you access it via localhost instead of 127.0.0.1
+]
 
 TEMPLATES = [
     {
@@ -246,7 +251,7 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=60),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 

@@ -197,7 +197,7 @@ function BaseHeader() {
                             </>
                         )}
                         <Link className="btn btn-success ms-2" to="/cart/">
-                            Cart ({cartCount}) <i className="fas fa-shopping-cart"> </i>
+                            Card ({cartCount}) <i className="fas fa-shopping-cart"> </i>
                         </Link>
                     </div>
                 </div>

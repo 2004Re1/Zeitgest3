@@ -6,7 +6,6 @@ import { register } from "../../utils/auth";
 
 import BaseHeader from "../partials/BaseHeader";
 import BaseFooter from "../partials/BaseFooter";
-import Toast from "../plugin/Toast";
 
 function Register() {
   const [fullName, setFullName] = useState("");
@@ -27,10 +26,7 @@ function Register() {
       setIsLoading(false);
     } else {
       navigate("/");
-      Toast().fire({
-        icon: "success",
-        title: "Account created successfully",
-      });
+      alert("Registration Successfull, you have now been logged in");
       setIsLoading(false);
     }
   };

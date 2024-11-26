@@ -1,12 +1,81 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
+import Rater from "react-rater";
+import "react-rater/lib/react-rater.css";
 
-import BaseHeader from '../partials/BaseHeader'
-import BaseFooter from '../partials/BaseFooter'
-import Sidebar from './Partials/Sidebar'
-import Header from './Partials/Header'
+import BaseHeader from "../partials/BaseHeader";
+import BaseFooter from "../partials/BaseFooter";
+import Sidebar from "./Partials/Sidebar";
+import Header from "./Partials/Header";
+
+import useAxios from "../../utils/useAxios";
+import UserData from "../plugin/UserData";
+import Toast from "../plugin/Toast";
+import CartId from "../plugin/CartId";
+import GetCurrentAddress from "../plugin/UserCountry";
+import { CartContext } from "../plugin/Context";
 
 function Wishlist() {
+    const [wishlist, setWishlist] = useState([]);
+    const [cartCount, setCartCount] = useContext(CartContext);
+    const userId = UserData()?.user_id;
+
+    const fetchWishlist = () => {
+        useAxios.get(`student/wishlist/${UserData()?.user_id}/`).then((res) => {
+            console.log(res.data);
+            setWishlist(res.data);
+        });
+    };
+    const country = GetCurrentAddress()?.country;
+
+    useEffect(() => {
+        fetchWishlist();
+    }, []);
+
+    const addToCart = async (courseId, userId, price, country, cartId) => {
+        const formdata = new FormData();
+
+        formdata.append("course_id", courseId);
+        formdata.append("user_id", userId);
+        formdata.append("price", price);
+        formdata.append("country_name", country);
+        formdata.append("cart_id", cartId);
+
+        try {
+            await useAxios.post(`course/cart/`, formdata).then((res) => {
+                console.log(res.data);
+                Toast().fire({
+                    title: "Added To card",
+                    icon: "success",
+                });
+
+                // Set cart count after adding to cart
+                useAxios
+                    .get(`course/cart-list/${CartId()}/`)
+                    .then((res) => {
+                        setCartCount(res.data?.length);
+                    });
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const addToWishlist = (courseId) => {
+        const formdata = new FormData();
+        formdata.append("user_id", UserData()?.user_id);
+        formdata.append("course_id", courseId);
+
+        useAxios.post(`student/wishlist/${UserData()?.user_id}/`, formdata).then((res) => {
+            console.log(res.data);
+            fetchWishlist();
+            Toast().fire({
+                icon: "success",
+                title: res.data.message,
+            });
+        });
+    };
+
     return (
         <>
             <BaseHeader />
@@ -19,78 +88,86 @@ function Wishlist() {
                         {/* Sidebar Here */}
                         <Sidebar />
                         <div className="col-lg-9 col-md-8 col-12">
-                            <h4 className="mb-0 mb-4"> <i className='fas fa-heart'></i> Wishlist </h4>
-
-
+                            <h4 className="mb-0 mb-4">
+                                {" "}
+                                <i className="fas fa-heart"></i> Wishlist{" "}
+                            </h4>
 
                             <div className="row">
                                 <div className="col-md-12">
                                     <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                                        <div className="col-lg-4">
-                                            {/* Card */}
-                                            <div className="card card-hover">
-                                                <Link to={`/course-detail/slug/`}>
-                                                    <img
-                                                        src="https://geeksui.codescandy.com/geeks/assets/images/course/course-css.jpg"
-                                                        alt="course"
-                                                        className="card-img-top"
-                                                    />
-                                                </Link>
-                                                {/* Card Body */}
-                                                <div className="card-body">
-                                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                                        <span className="badge bg-info">Intermediate</span>
-                                                        <a href="#" className="fs-5">
-                                                            <i className="fas fa-heart text-danger align-middle" />
-                                                        </a>
-                                                    </div>
-                                                    <h4 className="mb-2 text-truncate-line-2 ">
-                                                        <Link to={`/course-detail/slug/`} className="text-inherit text-decoration-none text-dark fs-5">
-                                                            How to easily create a website with JavaScript
-                                                        </Link>
-                                                    </h4>
-                                                    <small>By: Claire Evans</small> <br />
-                                                    <small>16k Students</small> <br />
-                                                    <div className="lh-1 mt-3 d-flex">
-                                                        <span className="align-text-top">
-                                                            <span className="fs-6">
-                                                                <i className='fas fa-star text-warning'></i>
-                                                                <i className='fas fa-star text-warning'></i>
-                                                                <i className='fas fa-star text-warning'></i>
-                                                                <i className='fas fa-star text-warning'></i>
-                                                                <i className='fas fa-star-half text-warning'></i>
+                                        {wishlist?.map((w, index) => (
+                                            <div className="col-lg-4">
+                                                {/* Card */}
+                                                <div className="card card-hover">
+                                                    <Link to={`/course-detail/${w.course.slug}/`}>
+                                                        <img
+                                                            src={w.course.image}
+                                                            alt="course"
+                                                            className="card-img-top"
+                                                            style={{
+                                                                width: "100%",
+                                                                height: "200px",
+                                                                objectFit: "cover",
+                                                            }}
+                                                        />
+                                                    </Link>
+                                                    {/* Card Body */}
+                                                    <div className="card-body">
+                                                        <div className="d-flex justify-content-between align-items-center mb-3">
+                                                            <div>
+                                                                <span className="badge bg-info">{w.course.level}</span>
+                                                                <span className="badge bg-success ms-2">{w.course.language}</span>
+                                                            </div>
+                                                            <a onClick={() => addToWishlist(w.course?.id)} className="fs-5">
+                                                                <i className="fas fa-heart text-danger align-middle" />
+                                                            </a>
+                                                        </div>
+                                                        <h4 className="mb-2 text-truncate-line-2 ">
+                                                            <Link to={`/course-detail/slug/`} className="text-inherit text-decoration-none text-dark fs-5">
+                                                                {w.course.title}
+                                                            </Link>
+                                                        </h4>
+                                                        <small>By: {w.course?.teacher?.full_name}</small> <br />
+                                                        <small>
+                                                            {w.course.students?.length} Student
+                                                            {w.course.students?.length > 1 && "s"}
+                                                        </small>{" "}
+                                                        <br />
+                                                        <div className="lh-1 mt-3 d-flex">
+                                                            <span className="align-text-top">
+                                                                <span className="fs-6">
+                                                                    <Rater total={5} rating={w.course.average_rating || 0} />
+                                                                </span>
                                                             </span>
-                                                        </span>
-                                                        <span className="text-warning">4.5</span>
-                                                        <span className="fs-6 ms-2">(9,300)</span>
+                                                            <span className="text-warning">4.5</span>
+                                                            <span className="fs-6 ms-2">({w.course.reviews?.length} Reviews)</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                {/* Card Footer */}
-                                                <div className="card-footer">
-                                                    <div className="row align-items-center g-0">
-                                                        <div className="col">
-                                                            <h5 className="mb-0">$39.00</h5>
+                                                    {/* Card Footer */}
+                                                    <div className="card-footer">
+                                                        <div className="row align-items-center g-0">
+                                                            <div className="col">
+                                                                <h5 className="mb-0">${w.course.price}</h5>
+                                                            </div>
+                                                            <div className="col-auto">
+                                                                <button type="button" onClick={() => addToCart(w.course.id, UserData()?.user_id, w.course.price, country, CartId())} className="text-inherit text-decoration-none btn btn-primary me-2">
+                                                                    <i className="fas fa-shopping-cart text-primary text-white" />
+                                                                </button>
+                                                                <Link to={""} className="text-inherit text-decoration-none btn btn-primary">
+                                                                    Enroll Now <i className="fas fa-arrow-right text-primary align-middle me-2 text-white" />
+                                                                </Link>
+                                                            </div>
                                                         </div>
-                                                        <div className="col-auto">
-                                                            <a href="#" className="text-inherit text-decoration-none btn btn-primary">
-                                                                <i className="fas fa-shopping-cart text-primary me-2 text-white" />
-                                                                Enroll Now
-                                                            </a>
-                                                            <a href="#" className="text-inherit text-decoration-none btn btn-danger ms-2">
-                                                                <i className="fas fa-trash text-white" />
-                                                            </a>
-                                                        </div>
-
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        ))}
 
+                                        {wishlist.length < 1 && <p className="mt-4 p-3">No item in wishlist</p>}
                                     </div>
-
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -98,7 +175,7 @@ function Wishlist() {
 
             <BaseFooter />
         </>
-    )
+    );
 }
 
-export default Wishlist
+export default Wishlist;
